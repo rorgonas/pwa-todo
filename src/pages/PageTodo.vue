@@ -34,6 +34,7 @@
             <q-input
               v-model="task.title"
               :placeholder="task.title"
+              @keyup.enter="updateTask(task)"
               filled
               square
             />
@@ -162,11 +163,13 @@ export default {
           const { type, message } = response.data
           this.toggleEditMode(task)
           this.$q.notify({ type, message, position: 'top-right' })
-          this.$q.loading.hide()
         })
         .catch((err) => {
           const { type, message } = err.data
           this.$q.notify({ type, message, position: 'bottom-right' })
+        })
+        .finally(() => {
+          this.$q.loading.hide()
         })
     },
     toggleEditMode(task) {
