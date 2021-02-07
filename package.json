@@ -6,13 +6,16 @@
   "author": "Danny Connell",
   "private": true,
   "scripts": {
-    "start": "nodemon node index.js"
+    "test": "echo \"No test specified\" && exit 0",
+    "dev": "quasar dev"
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "axios": "^0.18.1",
     "core-js": "^3.6.5",
-    "quasar": "^1.0.0"
+    "qs": "^6.9.6",
+    "quasar": "^1.0.0",
+    "short-uuid": "^4.1.0"
   },
   "devDependencies": {
     "@quasar/app": "^2.0.0"

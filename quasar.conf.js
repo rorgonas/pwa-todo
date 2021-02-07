@@ -5,6 +5,7 @@
 
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
+let API_DEV = "http://localhost:3000";
 
 module.exports = function (/* ctx */) {
   return {
@@ -18,7 +19,7 @@ module.exports = function (/* ctx */) {
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/boot-files
     boot: [
-      
+
       'axios',
     ],
 
@@ -43,6 +44,9 @@ module.exports = function (/* ctx */) {
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
+      env: {
+        API: API_DEV
+      },
       vueRouterMode: 'hash', // available values: 'hash', 'history'
 
       // transpile: false,
@@ -85,7 +89,7 @@ module.exports = function (/* ctx */) {
       importStrategy: 'auto',
 
       // Quasar plugins
-      plugins: []
+      plugins: ['Loading', 'Notify', 'Dialog']
     },
 
     // animations: 'all', // --- includes all animations
