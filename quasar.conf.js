@@ -19,7 +19,6 @@ module.exports = function (/* ctx */) {
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/boot-files
     boot: [
-
       'axios',
     ],
 
@@ -106,8 +105,8 @@ module.exports = function (/* ctx */) {
       workboxPluginMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
       workboxOptions: {}, // only for GenerateSW
       manifest: {
-        name: `PWA Todo 1`,
-        short_name: `PWA Todo 1`,
+        name: `PWA Todo`,
+        short_name: `PWA Todo`,
         description: `A Quasar Framework app`,
         display: 'standalone',
         orientation: 'portrait',
