@@ -47,7 +47,10 @@ app.get('/tasks',async  (req, res) => {
     });
     res.send(tasks);
   } catch(err) {
-    res.send(err)
+    res.send({
+      type: 'negative',
+      message: 'Unable to get Tasks!'
+    })
   }
 });
 
@@ -56,7 +59,7 @@ app.post('/createTask', async (req,res) => {
   const payload = {
     id: req.query.id,
     title: req.query.title,
-    editable: req.query.editable,
+    editable: false,
     timestamp: Date.now(),
   }
   try {
@@ -66,7 +69,10 @@ app.post('/createTask', async (req,res) => {
       message: `Task successfully created.`
     })
   } catch(err) {
-    res.send(err)
+    res.send({
+      type: 'negative',
+      message:'Unable to create Task!'
+    })
   }
 });
 
@@ -76,10 +82,13 @@ app.delete('/removeTask', async (req,res) => {
     await db.collection('tasks').doc(req.query.id).delete();
     res.send({
       type: 'info',
-      message: `Task successfully removed.`
+      message: 'Task successfully removed.'
     })
   } catch(err) {
-    res.send(err)
+    res.send({
+      type: 'negative',
+      message:'Unable to remove Task!'
+    })
   }
 });
 
@@ -88,7 +97,7 @@ app.put('/updateTask', async (req,res) => {
   const payload = {
     id: req.query.id,
     title: req.query.title,
-    editable: req.query.editable,
+    editable: false,
     timestamp: Date.now(),
   }
 
@@ -96,10 +105,13 @@ app.put('/updateTask', async (req,res) => {
     await db.collection('tasks').doc(req.query.id).set(payload);
     res.send({
       type: 'info',
-      message: `Task successfully updated.`
+      message: 'Task successfully updated.'
     })
   } catch(err) {
-    res.send(err)
+    res.send({
+      type: 'negative',
+      message:'Unable to update Task!'
+    })
   }
 });
 

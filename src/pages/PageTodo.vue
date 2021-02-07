@@ -94,16 +94,13 @@ export default {
         .then(response => {
           this.tasks = response.data
         })
-      .catch(err => {
-        this.$q.notify({
-          type: 'negative',
-          message: 'Ups something happened. Try again!',
-          position: 'bottom-right'
+        .catch((err) => {
+          const { type, message } = err.data
+          this.$q.notify({ type, message, position: 'bottom-right' })
         })
-      })
-      .finally(() => {
-        this.$q.loading.hide()
-      })
+        .finally(() => {
+          this.$q.loading.hide()
+        })
     },
     addTask() {
       if (this.newTask.length === 0) {
@@ -113,18 +110,20 @@ export default {
       let newTask = {
         id: uuid.generate(),
         title: this.newTask,
-        editable: false
       }
       this.$q.loading.show()
       this.$axios.post(`${process.env.API}/createTask?${qs.stringify(newTask)}`)
         .then((response) => {
+          const { type, message } = response.data
           this.tasks.push(newTask)
           this.newTask = ''
-          this.$q.notify({
-            type: response.data.type,
-            message: response.data.message,
-            position: 'top-right'
-          })
+          this.$q.notify({ type, message, position: 'top-right' })
+        })
+        .catch((err) => {
+          const { type, message } = err.data
+          this.$q.notify({ type, message, position: 'bottom-right' })
+        })
+        .finally(() => {
           this.$q.loading.hide()
         })
     },
@@ -137,19 +136,14 @@ export default {
       }).onOk(() => {
         this.$axios.delete(`${process.env.API}/removeTask?id=${taskId}`)
           .then((response) => {
+            const { type, message } = response.data
             this.tasks.pop({ id: taskId })
-            this.$q.notify({
-              type: response.data.type,
-              message: response.data.message,
-              position: 'top-right'
-            })
+            this.$q.notify({ type, message, position: 'top-right' })
           })
-        .catch((err) => {
-          this.$q.notify({
-            type: err.data.type,
-            message: err.data.message
+          .catch((err) => {
+            const { type, message } = err.data
+            this.$q.notify({ type, message, position: 'bottom-right' })
           })
-        })
       })
     },
     updateTask(task) {
@@ -160,19 +154,19 @@ export default {
 
       let newTask = {
         id: task.id,
-        title: task.title,
-        editable: false
+        title: task.title
       }
       this.$q.loading.show()
       this.$axios.put(`${process.env.API}/updateTask?${qs.stringify(newTask)}`)
         .then((response) => {
+          const { type, message } = response.data
           this.toggleEditMode(task)
-          this.$q.notify({
-            type: response.data.type,
-            message: response.data.message,
-            position: 'top-right'
-          })
+          this.$q.notify({ type, message, position: 'top-right' })
           this.$q.loading.hide()
+        })
+        .catch((err) => {
+          const { type, message } = err.data
+          this.$q.notify({ type, message, position: 'bottom-right' })
         })
     },
     toggleEditMode(task) {
