@@ -49,7 +49,8 @@ app.get('/tasks',async  (req, res) => {
   } catch(err) {
     res.send({
       type: 'negative',
-      message: 'Unable to get Tasks!'
+      message: 'Unable to get Tasks!',
+      position: 'bottom-right'
     })
   }
 });
@@ -66,12 +67,14 @@ app.post('/createTask', async (req,res) => {
     await db.collection('tasks').doc(req.query.id).set(payload);
     res.send({
       type: 'info',
-      message: `Task successfully created.`
+      message: `Task successfully created.`,
+      position: 'top-right'
     })
   } catch(err) {
     res.send({
       type: 'negative',
-      message:'Unable to create Task!'
+      message:'Unable to create Task!',
+      position: 'bottom-right'
     })
   }
 });
@@ -82,12 +85,14 @@ app.delete('/removeTask', async (req,res) => {
     await db.collection('tasks').doc(req.query.id).delete();
     res.send({
       type: 'info',
-      message: 'Task successfully removed.'
+      message: 'Task successfully removed.',
+      position: 'top-right'
     })
   } catch(err) {
     res.send({
       type: 'negative',
-      message:'Unable to remove Task!'
+      message:'Unable to remove Task!',
+      position: 'bottom-right'
     })
   }
 });
@@ -105,12 +110,14 @@ app.put('/updateTask', async (req,res) => {
     await db.collection('tasks').doc(req.query.id).set(payload);
     res.send({
       type: 'info',
-      message: 'Task successfully updated.'
+      message: 'Task successfully updated.',
+      position: 'top-right'
     })
   } catch(err) {
     res.send({
       type: 'negative',
-      message:'Unable to update Task!'
+      message:'Unable to update Task!',
+      position: 'bottom-right'
     })
   }
 });

@@ -96,8 +96,9 @@ export default {
           this.tasks = response.data
         })
         .catch((err) => {
-          const { type, message } = err.data
-          this.$q.notify({ type, message, position: 'bottom-right' })
+          if (err.data) {
+            this.$q.notify(err.data)
+          }
         })
         .finally(() => {
           this.$q.loading.hide()
@@ -116,14 +117,16 @@ export default {
       this.$q.loading.show()
       this.$axios.post(`${process.env.API}/createTask?${qs.stringify(newTask)}`)
         .then((response) => {
-          const { type, message } = response.data
           this.tasks.push(newTask)
           this.newTask = ''
-          this.$q.notify({ type, message, position: 'top-right' })
+          this.$q.notify(response.data)
         })
         .catch((err) => {
-          const { type, message } = err.data
-          this.$q.notify({ type, message, position: 'bottom-right' })
+          if (!navigator.onLine) {
+            this.$q.notify('Task created offline')
+          } else if (err.data) {
+            this.$q.notify(err.data)
+          }
         })
         .finally(() => {
           this.$q.loading.hide()
@@ -138,13 +141,13 @@ export default {
       }).onOk(() => {
         this.$axios.delete(`${process.env.API}/removeTask?id=${taskId}`)
           .then((response) => {
-            const { type, message } = response.data
             this.tasks.pop({ id: taskId })
-            this.$q.notify({ type, message, position: 'top-right' })
+            this.$q.notify(response.data)
           })
           .catch((err) => {
-            const { type, message } = err.data
-            this.$q.notify({ type, message, position: 'bottom-right' })
+            if (err.data) {
+              this.$q.notify(err.data)
+            }
           })
       })
     },
@@ -163,13 +166,13 @@ export default {
       this.$q.loading.show()
       this.$axios.put(`${process.env.API}/updateTask?${qs.stringify(newTask)}`)
         .then((response) => {
-          const { type, message } = response.data
           this.toggleEditMode(task)
-          this.$q.notify({ type, message, position: 'top-right' })
+          this.$q.notify(response.data)
         })
         .catch((err) => {
-          const { type, message } = err.data
-          this.$q.notify({ type, message, position: 'bottom-right' })
+          if (err.data) {
+            this.$q.notify(err.data)
+          }
         })
         .finally(() => {
           this.$q.loading.hide()

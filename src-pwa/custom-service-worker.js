@@ -12,6 +12,8 @@
 import { precacheAndRoute } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { NetworkFirst } from 'workbox-strategies';
+import { Queue } from 'workbox-background-sync';
+
 
 /*
 * Config
@@ -29,3 +31,23 @@ registerRoute(
   ({ url }) => url.pathname.startsWith('/tasks'),
   new NetworkFirst()
 );
+
+
+/*
+* Queues
+* */
+
+const createTaskQueue = new Queue('createTaskQueue');
+
+
+/*
+* Events fetch
+* */
+self.addEventListener('fetch', (event) => {
+  if (event.request.url.startsWith('http://localhost:3000/createTask') && !self.navigator.onLine) {
+    const promiseChain = fetch(event.request.clone()).catch((err) => {
+      return createTaskQueue.pushRequest({ request: event.request });
+    });
+    event.waitUntil(promiseChain);
+  }
+});
