@@ -107,10 +107,11 @@ export default {
       if (this.newTask.length === 0) {
         return;
       }
-
       let newTask = {
         id: uuid.generate(),
         title: this.newTask,
+        editable: false,
+        timestamp: Date.now(),
       }
       this.$q.loading.show()
       this.$axios.post(`${process.env.API}/createTask?${qs.stringify(newTask)}`)
@@ -155,7 +156,9 @@ export default {
 
       let newTask = {
         id: task.id,
-        title: task.title
+        title: task.title,
+        editable: false,
+        timestamp: Date.now(),
       }
       this.$q.loading.show()
       this.$axios.put(`${process.env.API}/updateTask?${qs.stringify(newTask)}`)

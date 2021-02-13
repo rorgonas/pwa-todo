@@ -16,7 +16,7 @@ require('dotenv').config();
 
 const app = express();
 const port = 3000;
-const host = "http://localhost:8080";
+const host = "http://localhost:8081";
 
 app.use(cors({ origin: host }));
 
@@ -59,8 +59,8 @@ app.post('/createTask', async (req,res) => {
   const payload = {
     id: req.query.id,
     title: req.query.title,
-    editable: false,
-    timestamp: Date.now(),
+    editable: req.query.editable === 'true',
+    timestamp: req.query.timestamp,
   }
   try {
     await db.collection('tasks').doc(req.query.id).set(payload);
@@ -97,8 +97,8 @@ app.put('/updateTask', async (req,res) => {
   const payload = {
     id: req.query.id,
     title: req.query.title,
-    editable: false,
-    timestamp: Date.now(),
+    editable: req.query.editable === 'true',
+    timestamp: req.query.timestamp,
   }
 
   try {
