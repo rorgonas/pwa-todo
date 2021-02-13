@@ -17,6 +17,8 @@
           dense
         />
         <q-btn
+          v-if="showInstallAppButton"
+          @click="installApp"
           label="Install App"
           class="col"
           no-caps
@@ -32,12 +34,35 @@
 </template>
 
 <script>
+let deferredPrompt;
+
 export default {
   name: 'MainLayout',
 
   data () {
     return {
+      showInstallAppButton: false
+    }
+  },
+  mounted() {
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Prevent showing the prompt
+      deferredPrompt = e;
+      this.showInstallAppButton = true;
+    });
+  },
+  methods: {
+    installApp() {
+      deferredPrompt.prompt();
 
+      deferredPrompt.userChoice
+        .then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            this.showInstallAppButton = false;
+          }
+          // We no longer need the prompt.  Clear it up.
+          deferredPrompt = null;
+        });
     }
   }
 }
