@@ -3,10 +3,27 @@
     <q-header elevated>
       <q-toolbar>
         <q-toolbar-title class="text-center">
-          PWA Todo 1
+          PWA Todo
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
+
+    <q-footer>
+      <q-toolbar>
+        <q-btn
+          label="Enable Notifications"
+          class="col"
+          no-caps
+          dense
+        />
+        <q-btn
+          label="Install App"
+          class="col"
+          no-caps
+          dense
+        />
+      </q-toolbar>
+    </q-footer>
 
     <q-page-container>
       <router-view />
