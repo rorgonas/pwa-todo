@@ -10,6 +10,8 @@
  *  */
 
 import { precacheAndRoute } from 'workbox-precaching';
+import { registerRoute } from 'workbox-routing';
+import { NetworkFirst } from 'workbox-strategies';
 
 /*
 * Config
@@ -17,3 +19,13 @@ import { precacheAndRoute } from 'workbox-precaching';
 
 // Use with precache injection
 precacheAndRoute(self.__WB_MANIFEST);
+
+
+/*
+* Cashing strategies
+* */
+
+registerRoute(
+  ({ url }) => url.pathname.startsWith('/tasks'),
+  new NetworkFirst()
+);
