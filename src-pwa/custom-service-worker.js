@@ -22,6 +22,11 @@ import { Queue } from 'workbox-background-sync';
 // Use with precache injection
 precacheAndRoute(self.__WB_MANIFEST);
 
+/*
+* Check if Background sync is natively supported
+* */
+
+let isBackgroundSyncSupported = 'sync' in self.registration
 
 /*
 * Cashing strategies
@@ -34,7 +39,7 @@ registerRoute(
 
 
 /*
-* Queues
+* Queues createTask
 * */
 
 const createTaskQueue = new Queue('createTaskQueue');
