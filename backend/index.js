@@ -2,6 +2,7 @@ const express = require('express');
 const admin = require("firebase-admin");
 const cors = require('cors');
 const qs = require('querystring');
+let webpush = require('web-push')
 
 /**
  * Config - env var
@@ -31,6 +32,22 @@ admin.initializeApp({
 });
 
 const db = admin.firestore();
+
+/**
+ * Config - web-push
+ **/
+
+// VAPID keys should only be generated only once.
+const vapidKeys = {
+  publicKey: process.env.VAPID_PUBLIC_KEY,
+  privateKey: process.env.VAPID_PRIVATE_KEY
+}
+
+webpush.setVapidDetails(
+  'mailto:test@test.com',
+  vapidKeys.publicKey,
+  vapidKeys.privateKey
+);
 
 /**
  * Endpoints - Tasks
@@ -70,6 +87,7 @@ app.post('/createTask', async (req,res) => {
       message: `Task successfully created.`,
       position: 'top-right'
     })
+    sendPushNotification()
   } catch(err) {
     res.send({
       type: 'negative',
@@ -78,6 +96,38 @@ app.post('/createTask', async (req,res) => {
     })
   }
 });
+
+function sendPushNotification() {
+  // This is the same output of calling JSON.stringify on a PushSubscription
+
+  db.collection('subscriptions').get()
+    .then((snapshot) => {
+      snapshot.forEach((doc) => {
+        const subscription = doc.data()
+        const { endpoint } = subscription
+        const { auth, p256dh } = subscription.keys
+
+        const pushConfig = {
+          endpoint,
+          keys: {
+            auth,
+            p256dh
+          }
+        }
+        const pushContent = {
+          title: 'A new Task has been added!',
+        }
+        // Notification was received using Chrome > Application** > Push Messaging
+        webpush.sendNotification(pushConfig, JSON.stringify(pushContent))
+          .then((success) => {
+            console.log('Sent push successfully: ', success);
+          })
+          .catch((err) => {
+            console.log('Unable to sent push successfully:', err);
+          });
+      })
+    })
+}
 
 app.delete('/removeTask', async (req,res) => {
   res.set('Access-Control-Allow-Origin', '*');
@@ -125,7 +175,7 @@ app.put('/updateTask', async (req,res) => {
 app.post('/createSubscription', async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
   try {
-    let snapshot = await db.collection('subscription').add(req.query)
+    let snapshot = await db.collection('subscriptions').add(req.query)
     res.send({
       message: 'Subscription added!',
       postData: req.query

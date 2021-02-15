@@ -123,7 +123,7 @@ export default {
     },
     displayGrantedNotification() {
       let notification = {
-        msg: 'You are subscribed to notification!',
+        msg: 'You are subscribed to TODO notification!',
         options: {
           body: 'Thanks for subscribing',
           icon: 'icons/icon-128x128.png',
@@ -136,19 +136,7 @@ export default {
           renotify: true
         }
       }
-      const actions = [
-        {
-          action: 'hello',
-          title: 'Hello',
-          icon: 'icons/icon-128x128.png'
-        },
-        {
-          action: 'goodbye',
-          title: 'Goodbye',
-          icon: 'icons/icon-128x128.png'
-        }
-      ]
-      registration.showNotification(notification.msg, { ...notification.options, actions })
+      registration.showNotification(notification.msg)
     },
     // Convert the URL safe base64 string to a Uint8Array to pass into the subscribe call
     urlBase64ToUint8Array(base64String) {
