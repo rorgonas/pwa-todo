@@ -122,4 +122,17 @@ app.put('/updateTask', async (req,res) => {
   }
 });
 
+app.post('/createSubscription', async (req, res) => {
+  res.set('Access-Control-Allow-Origin', '*');
+  try {
+    let snapshot = await db.collection('subscription').add(req.query)
+    res.send({
+      message: 'Subscription added!',
+      postData: req.query
+    })
+  } catch(err) {
+    console.log(err)
+  }
+})
+
 app.listen(port);

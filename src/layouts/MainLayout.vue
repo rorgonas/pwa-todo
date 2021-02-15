@@ -36,7 +36,10 @@
 </template>
 
 <script>
+import * as qs from "qs";
+
 let deferredPrompt;
+let registration;
 
 export default {
   name: 'MainLayout',
@@ -76,31 +79,30 @@ export default {
     },
     enableNotification() {
       if (this.pushNotificationSupported) {
-        debugger;
         Notification.requestPermission(result => {
           if (result === 'granted') {
-            // Check if User has existent PushSubscription
             this.checkForExistingPushSubscription();
           }
         })
       }
     },
+    // Check existent Push Notification subscription
     checkForExistingPushSubscription() {
       if (this.serviceWorkerSupported && this.pushNotificationSupported) {
-        let registration = null
         navigator.serviceWorker.ready
           .then(swreg => {
-            registration = swreg
+            registration = swreg;
             return swreg.pushManager.getSubscription()
           })
           .then(sub => {
             if(!sub) {
-              this.createPushSubscription(registration)
+              this.createPushSubscription()
             }
           })
       }
     },
-    createPushSubscription(registration) {
+    // Subscribe to a new Push Notification subscription
+    createPushSubscription() {
       // Need to secure push subscription by combining a user private & public key
       const vapidPublicKey  = 'BOfMjG9iNh32LTf9MAMlS_XEfxxq-UCIEjGUfjTXslo_1S4WRuL3i5_CHAvjB5O4LHQXXcSOYiUMDBXqMCJlrfQ'
       const convertedVapidKey = this.urlBase64ToUint8Array(vapidPublicKey);
@@ -109,10 +111,44 @@ export default {
         userVisibleOnly: true,
         applicationServerKey: convertedVapidKey
       }).then(newSub => {
-        console.log('New subscription obj ',newSub.toJSON())
-      }).catch(err => {
+        let newSubData = newSub.toJSON(),
+          newSubDataQS = qs.stringify(newSubData)
+        return this.$axios.post(`${process.env.API}/createSubscription?${newSubDataQS}`)
+      }).then((response => {
+        console.log('Create subscription response ',response.data)
+        this.displayGrantedNotification()
+      })).catch(err => {
         console.log('Create subscription err ',err)
       })
+    },
+    displayGrantedNotification() {
+      let notification = {
+        msg: 'You are subscribed to notification!',
+        options: {
+          body: 'Thanks for subscribing',
+          icon: 'icons/icon-128x128.png',
+          image: 'icons/icon-128x128.png',
+          badge: 'icons/icon-128x128.png',
+          dir: 'ltr',
+          lang: 'en-US',
+          vibrate: '[100, 50, 200]',
+          tag: 'confirm-notification',
+          renotify: true
+        }
+      }
+      const actions = [
+        {
+          action: 'hello',
+          title: 'Hello',
+          icon: 'icons/icon-128x128.png'
+        },
+        {
+          action: 'goodbye',
+          title: 'Goodbye',
+          icon: 'icons/icon-128x128.png'
+        }
+      ]
+      registration.showNotification(notification.msg, { ...notification.options, actions })
     },
     // Convert the URL safe base64 string to a Uint8Array to pass into the subscribe call
     urlBase64ToUint8Array(base64String) {
