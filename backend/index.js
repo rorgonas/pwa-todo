@@ -115,7 +115,7 @@ function sendPushNotification() {
           }
         }
         const pushContent = {
-          title: 'A new Task has been added!',
+          title: 'A new task has been added!',
         }
         // Notification was received using Chrome > Application** > Push Messaging
         webpush.sendNotification(pushConfig, JSON.stringify(pushContent))

@@ -56,3 +56,18 @@ self.addEventListener('fetch', (event) => {
     event.waitUntil(promiseChain);
   }
 });
+
+/*
+* Events - push
+* */
+
+self.addEventListener('push', event => {
+  console.log('Push message received:', event)
+  if (event.data) {
+    // store push message content in data
+    let data = JSON.parse(event.data.text())
+    event.waitUntil(
+      self.registration.showNotification(data.title)
+    )
+  }
+})
