@@ -71,3 +71,25 @@ self.addEventListener('push', event => {
     )
   }
 })
+
+/*
+* Events - notifications
+* */
+
+self.addEventListener('notificationclick', (event) => {
+  event.waitUntil(
+    clients.matchAll().then((clients) => {
+      let clientUsingApp = clients.find(client => {
+        return client.visibilityState === 'visible'
+      })
+
+      if (clientUsingApp) {
+        clientUsingApp.navigate('/#/')
+        clientUsingApp.focus()
+      } else {
+        clients.openWindow('/#/')
+      }
+    })
+  )
+})
+
