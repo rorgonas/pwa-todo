@@ -1,5 +1,7 @@
 # Assignment 1 - Database & Backend
 
+![Screen Shot 2021-10-04 at 9 57 56 AM](https://user-images.githubusercontent.com/1928898/135864575-3b0ac958-f7be-4d87-9999-3c80a5a4d6bf.png)
+
 
 ## Task 1 - Get the Project Running <input type="checkbox">
 - Get the project running:
